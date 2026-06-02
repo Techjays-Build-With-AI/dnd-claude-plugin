@@ -35,9 +35,9 @@ This one Git repo is both the **marketplace** and the **plugin** it contains:
 | `policies/` | Dual-use governance (human-readable + agent-enforced). Start at `00-scope-governance-charter.md`. |
 | `reference/` | The encoded mold (`dnd-schema.yaml`/`.md`), readiness scoring, classification taxonomy, example-coverage rules. |
 | `skills/discovery-completeness/` | The core orchestrator skill — auto-triggers on D&D/discovery work and runs the loop. |
-| `commands/` | One slash command per stage: `init · intake · map · gap-scan · questions · validation-pack · readiness`. |
+| `commands/` | One slash command per stage: `init · intake · map · gap-scan · questions · validation-pack · readiness · report`. |
 | `agents/` | Seven subagents that do the heavy lifting per stage. |
-| `templates/` | Output shapes: artifact index, knowledge model, health dashboard, client validation pack, workflow example validation. |
+| `templates/` | Output shapes: artifact index, knowledge model, health dashboard, client validation pack, workflow example validation, and a self-contained HTML report. |
 
 The plugin is the tool; per-project knowledge bases are generated into **your** working directory
 under `projects/<client>/`. Source of truth for the mold is `reference/dnd-schema.yaml`.
@@ -139,6 +139,7 @@ Work from the directory where you want the project's knowledge base to live (the
 | 5 | `/dnd-copilot:questions` | Generate stakeholder questions and example requests for the gaps. |
 | 6 | `/dnd-copilot:validation-pack` | Produce the client-facing confirmation pack. |
 | 7 | `/dnd-copilot:readiness` | Verdict — Ready / Not Ready / Ready-with-Assumptions vs the 7 PSRC lenses. |
+| 8 | `/dnd-copilot:report [validation\|final]` | Render the knowledge model into a self-contained, read-only HTML report for client review + print-to-PDF sign-off. |
 
 You can enter at any step depending on what you already have, and re-run `gap-scan` / `readiness` as
 new evidence arrives. The co-pilot will **refuse to call a workflow scope-ready** until it has a
@@ -167,6 +168,11 @@ Add one row per file with its access type and (for examples) its workflow + scen
 - A continuously updated **Discovery Health Dashboard** (internal).
 - A **Client Validation Pack** when sections mature.
 - A **readiness verdict** mapped to the PSRC review lenses, and eventually the **Final D&D Pack**.
+- A self-contained **HTML report** (`/dnd-copilot:report`) for client review — collapsible modules,
+  clickable evidence/example traceability, the readiness + coverage gates visualized. It is
+  **read-only**: sign-off is by a dated **print-to-PDF** export of that exact version, cited on the
+  Approval Page (no fake in-page "Approve" button — the plugin has no backend to capture one). The
+  content is static HTML, so it stays readable even if a mail client strips JavaScript.
 
 ---
 

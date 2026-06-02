@@ -79,12 +79,14 @@ delegate heavy work to the subagent to keep context clean.
 5. **Questions** (`/dnd-copilot:questions`) — generate stakeholder-specific clarification questions
    for every gap, and **example requests** for every workflow short of 100% coverage.
 6. **Validation pack** (`/dnd-copilot:validation-pack`) — produce the client-facing pack to confirm
-   or correct understanding; track decisions and confirmations.
+   or correct understanding; track decisions and confirmations. Render it for the client with
+   `/dnd-copilot:report validation` (self-contained, read-only HTML).
 7. **Readiness** (`/dnd-copilot:readiness`) — Ready / Not Ready / Ready-with-Assumptions, reported
    against the seven PSRC lenses, naming ready vs deferred vs excluded modules and required SOW
    assumptions.
 8. **Freeze** — only once validation is sufficiently complete: produce the Final D&D Pack and the
-   Approval Page (scope-freeze + exclusions + change-control note verbatim).
+   Approval Page (scope-freeze + exclusions + change-control note verbatim). Render it with
+   `/dnd-copilot:report final`; the client signs a dated print-to-PDF of that exact version.
 
 You may enter the loop at any step depending on what the user already has. Do not skip the
 example-coverage gate when deciding readiness.

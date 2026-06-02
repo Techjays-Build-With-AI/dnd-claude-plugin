@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<!--
+  Techjays D&D — self-contained report. READ-ONLY (no backend; no real "Approve" button).
+  How to fill: replace {{PLACEHOLDERS}} and inject rendered HTML into the <!-- REGION --> markers.
+  Content is static HTML so it remains readable with JS disabled or stripped by email clients;
+  the inline <script> only ENHANCES (collapse / filter). @media print expands everything for PDF.
+  Sign-off of record = print this to a dated PDF (Approval Page cites {{VERSION}} + {{GENERATED_DATE}}).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PROJECT_NAME}} — {{PACK_TYPE}}</title>
+<style>
+  :root { --ink:#1c2530; --muted:#5b6b7b; --line:#e2e8f0; --bg:#f7f9fc; --brand:#0b5cab;
+          --ok:#1a7f4b; --warn:#b7791f; --bad:#c0392b; --chip:#eef3f9; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+         color:var(--ink); background:var(--bg); }
+  header.doc { background:#fff; border-bottom:3px solid var(--brand); padding:24px 32px; }
+  header.doc h1 { margin:0 0 4px; font-size:22px; }
+  header.doc .meta { color:var(--muted); font-size:13px; }
+  header.doc .pack { display:inline-block; margin-top:8px; padding:3px 10px; border-radius:999px;
+                     background:var(--chip); color:var(--brand); font-weight:600; font-size:12px; }
+  .wrap { max-width:1000px; margin:0 auto; padding:24px 32px 64px; }
+  section.block { background:#fff; border:1px solid var(--line); border-radius:10px;
+                  padding:18px 20px; margin:18px 0; }
+  h2 { font-size:17px; margin:0 0 12px; }
+  h3 { font-size:15px; margin:14px 0 6px; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th,td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; font-weight:600; }
+  .b-ok{background:#e6f4ec;color:var(--ok);} .b-warn{background:#fdf3e2;color:var(--warn);}
+  .b-bad{background:#fbeae8;color:var(--bad);} .b-neutral{background:var(--chip);color:var(--muted);}
+  .gate { font-size:12px; }
+  .gate span { margin-right:6px; }
+  /* Module cards (collapsible via JS; open by default so JS-off still shows content) */
+  .module { border:1px solid var(--line); border-radius:10px; margin:14px 0; background:#fff; }
+  .module > .head { display:flex; justify-content:space-between; align-items:center; gap:12px;
+                    padding:14px 18px; cursor:pointer; }
+  .module > .head h3 { margin:0; }
+  .module > .body { padding:0 18px 16px; }
+  .toggle { color:var(--brand); font-size:13px; user-select:none; }
+  .evidence a { color:var(--brand); text-decoration:none; }
+  .evidence a:hover { text-decoration:underline; }
+  .filters { margin:6px 0 0; }
+  .chip { display:inline-block; padding:5px 12px; margin:4px 6px 0 0; border:1px solid var(--line);
+          border-radius:999px; background:#fff; cursor:pointer; font-size:13px; }
+  .chip.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+  .controls { font-size:13px; color:var(--brand); cursor:pointer; }
+  .note { color:var(--muted); font-size:13px; }
+  .hide { display:none !important; }
+  footer.doc { color:var(--muted); font-size:12px; text-align:center; padding:24px; }
+  @media print {
+    body { background:#fff; }
+    .no-print, .filters, .controls, .toggle { display:none !important; }
+    .module > .body { display:block !important; }   /* force-expand for PDF */
+    section.block, .module { break-inside:avoid; border-color:#ccc; }
+    .module { break-inside:auto; }
+    a[href]:after { content:""; }                    /* don't print raw URLs */
+    @page { margin:16mm; }
+  }
+</style>
+</head>
+<body>
+<header class="doc">
+  <h1>{{PROJECT_NAME}}</h1>
+  <div class="meta">{{CLIENT}} &middot; Prepared by Techjays &middot; Generated {{GENERATED_DATE}}
+    &middot; Version <strong>{{VERSION}}</strong></div>
+  <span class="pack">{{PACK_TYPE}}</span>
+  <p class="note" style="margin:12px 0 0">Read-only review document. Approval of record is by signature
+  on the Approval Page / a dated PDF export of this exact version ({{VERSION}}, {{GENERATED_DATE}}).
+  Scenarios, rules, or exceptions not reviewed and validated here are out of scope unless added via
+  change control.</p>
+</header>
+
+<div class="wrap">
+
+  <section class="block no-print">
+    <strong>Quick actions:</strong>
+    <span class="controls" onclick="dnd.expandAll(true)">Expand all</span> &middot;
+    <span class="controls" onclick="dnd.expandAll(false)">Collapse all</span> &middot;
+    <span class="controls" onclick="window.print()">Print / Save as PDF</span>
+    <div class="filters">
+      <span class="chip active" data-filter="all">All</span>
+      <span class="chip" data-filter="in">In scope</span>
+      <span class="chip" data-filter="out">Out of scope</span>
+      <span class="chip" data-filter="assumption">Assumptions</span>
+      <span class="chip" data-filter="open">Open questions</span>
+      <span class="chip" data-filter="risk">Risks</span>
+    </div>
+  </section>
+
+  <!-- ===== READINESS SUMMARY ===== -->
+  <section class="block">
+    <h2>Readiness summary</h2>
+    <p>Overall verdict: <span class="badge b-warn">{{OVERALL_VERDICT}}</span></p>
+    <table>
+      <thead><tr><th>Module</th><th>Readiness</th><th>Example coverage</th><th>Sign-off</th></tr></thead>
+      <tbody>
+        <!-- READINESS_ROWS: one <tr> per module. Coverage cell uses gate badges (happy/exception/edge). -->
+      </tbody>
+    </table>
+    <p class="note">A module is "Ready for fixed-bid" only at 100% example coverage + client validation.</p>
+  </section>
+
+  <!-- ===== SCOPE BY MODULE ===== -->
+  <section class="block">
+    <h2>Scope by module</h2>
+    <!-- MODULE_CARDS: for each module, a .module card. Tag scope items with data-type="in|out". Example:
+    <div class="module">
+      <div class="head"><h3>Invoice Validation</h3>
+        <span><span class="badge b-warn">Readiness 65%</span> <span class="toggle">▾</span></span></div>
+      <div class="body">
+        <h3>Current state</h3><p>…</p>
+        <h3>Future state</h3><p>…</p>
+        <h3 class="filterable" data-type="in">In scope</h3><ul class="filterable" data-type="in"><li>…</li></ul>
+        <h3 class="filterable" data-type="out">Out of scope</h3><ul class="filterable" data-type="out"><li>…</li></ul>
+        <h3>Business rules</h3><ul><li>…</li></ul>
+        <h3>Exceptions</h3><ul><li>…</li></ul>
+        <h3>Data fields</h3><p>…</p>
+        <h3>Integrations</h3><p>…</p>
+        <h3>Acceptance criteria</h3><ul><li>…</li></ul>
+        <h3>Example coverage</h3>
+        <p class="gate"><span class="badge b-ok">Happy ✓</span><span class="badge b-ok">Exception ✓</span><span class="badge b-bad">Edge ✗</span></p>
+        <h3>Evidence</h3>
+        <ul class="evidence"><li>Requirement — <a href="DRIVE_OR_PATH">A3 Invoice INV-1045</a> (High)</li></ul>
+      </div>
+    </div>
+    -->
+  </section>
+
+  <!-- ===== RAID ===== -->
+  <section class="block">
+    <h2>Assumptions, dependencies, risks &amp; open questions (RAID)</h2>
+    <!-- RAID_SECTIONS: tag rows with data-type so the filters work, e.g.
+         <tr class="filterable" data-type="assumption">…</tr>,
+         data-type="open" for open questions, data-type="risk" for risks. -->
+  </section>
+
+  <!-- ===== APPROVAL ===== -->
+  <section class="block">
+    <h2>Approval</h2>
+    <p>This page records sign-off of the baseline described above (version {{VERSION}},
+       {{GENERATED_DATE}}). It is not interactive — approval is by signature below or in the client's
+       own system, on a dated PDF export of this version.</p>
+    <!-- APPROVAL: scope-freeze statement, exclusions acknowledgement, change-control note (verbatim),
+         and a static signatory table (name / role / org / signature / date). -->
+  </section>
+
+</div>
+
+<footer class="doc">Techjays Design &amp; Discovery &middot; {{PROJECT_NAME}} &middot; {{PACK_TYPE}}
+  &middot; v{{VERSION}} &middot; {{GENERATED_DATE}}</footer>
+
+<script>
+  // Progressive enhancement only — content above is already readable without this.
+  var dnd = (function () {
+    function init() {
+      document.querySelectorAll('.module > .head').forEach(function (h) {
+        h.addEventListener('click', function () {
+          var b = h.parentElement.querySelector('.body');
+          var t = h.querySelector('.toggle');
+          var open = b.style.display !== 'none';
+          b.style.display = open ? 'none' : 'block';
+          if (t) t.textContent = open ? '▸' : '▾';
+        });
+      });
+      document.querySelectorAll('.chip').forEach(function (c) {
+        c.addEventListener('click', function () {
+          document.querySelectorAll('.chip').forEach(function (x){ x.classList.remove('active'); });
+          c.classList.add('active');
+          applyFilter(c.getAttribute('data-filter'));
+        });
+      });
+    }
+    function applyFilter(f) {
+      document.querySelectorAll('.filterable').forEach(function (el) {
+        var show = (f === 'all') || (el.getAttribute('data-type') === f);
+        el.classList.toggle('hide', !show);
+      });
+    }
+    function expandAll(open) {
+      document.querySelectorAll('.module > .body').forEach(function (b){ b.style.display = open ? 'block':'none'; });
+      document.querySelectorAll('.module .toggle').forEach(function (t){ t.textContent = open ? '▾':'▸'; });
+    }
+    document.addEventListener('DOMContentLoaded', init);
+    return { expandAll: expandAll };
+  })();
+</script>
+</body>
+</html>
