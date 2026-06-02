@@ -1,6 +1,6 @@
 {
   "name": "dnd-copilot",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Design & Discovery co-pilot. Uses the Techjays D&D mold as a structured schema, ingests interviews/documents/samples, maps them into the required discovery outputs, scores scope readiness, enforces example-based validation, generates stakeholder questions, and produces a validated scope baseline for fixed-bid proposals.",
   "author": {
     "name": "Techjays"

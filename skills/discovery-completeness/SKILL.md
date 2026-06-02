@@ -35,6 +35,13 @@ Per-project knowledge lives in the user's working directory under `projects/<cli
 (not in the plugin). Templates to instantiate are in `${CLAUDE_PLUGIN_ROOT}/templates/`. If the user
 named a project in `$ARGUMENTS`, use it; otherwise ask which project, or offer to create a shell.
 
+**Self-healing shell.** Any stage may be entered first. Before doing a stage's work, ensure the
+project shell exists — the folder tree (`projects/<slug>/`, `inbox/`, `inbox/.cache/`, `outputs/`) and
+the seed files (`knowledge-model.md`, `inbox/index.md`, `discovery-health-dashboard.md`). Create only
+what is **missing**, from the templates; **never overwrite** existing files (they hold real discovery
+work). This is exactly what `init` does — running a later command early just triggers the same
+non-destructive scaffolding, then proceeds.
+
 ## Artifacts & the index (local + Google Drive)
 
 Each project has `inbox/index.md` — the **authoritative artifact register** (template:
