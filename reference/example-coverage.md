@@ -21,6 +21,12 @@ Each workflow should be validated with at least three example types:
 Coverage scoring: 3/3 = 100%, 2/3 = 67%, 1/3 = 33%, 0/3 = 0%. Thresholds and the hard gate are in
 [readiness-scoring.md](./readiness-scoring.md#3-the-example-coverage-gate-hard-rule).
 
+**Coverage is driven by the artifact index.** The `Workflow` + `Scenario` columns of
+`inbox/index.md` (template: [`../templates/artifact-index.md`](../templates/artifact-index.md)) map
+each example to a workflow and a scenario type. Only artifacts whose `Status` is `ready` or `ingested`
+count — a sample still `needs-fetch` (e.g. an un-fetched Google Drive file) does **not** contribute to
+coverage until it is actually read.
+
 ## Workflow Example Validation record
 
 The agent maintains one record per (workflow × example), using the template in

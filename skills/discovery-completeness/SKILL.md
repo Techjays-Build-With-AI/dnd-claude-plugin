@@ -35,6 +35,24 @@ Per-project knowledge lives in the user's working directory under `projects/<cli
 (not in the plugin). Templates to instantiate are in `${CLAUDE_PLUGIN_ROOT}/templates/`. If the user
 named a project in `$ARGUMENTS`, use it; otherwise ask which project, or offer to create a shell.
 
+## Artifacts & the index (local + Google Drive)
+
+Each project has `inbox/index.md` — the **authoritative artifact register** (template:
+`${CLAUDE_PLUGIN_ROOT}/templates/artifact-index.md`). It lists every artifact, its access
+(`local` or `gdrive`), its workflow + scenario (happy/exception/edge), and a `Status`. It doubles as
+the evidence source-of-record (Policy 03): requirements trace to artifact IDs here.
+
+**The subagents can only read local files.** So before any extraction, resolve the index:
+- `local` rows → verify readable.
+- `gdrive` rows → YOU (orchestrator, main thread) fetch them via the **`claude.ai Google Drive` MCP
+  connector**. Discover its tools with ToolSearch; if not yet authorized, call
+  `mcp__claude_ai_Google_Drive__authenticate`, give the user the URL, and pause until they authorize
+  (then complete with `mcp__claude_ai_Google_Drive__complete_authentication`). Save fetched files into
+  `inbox/.cache/`, update the row's `Local path` + `Status: ready`, and keep the Drive URL as
+  provenance.
+- Anything unreachable stays `needs-fetch`: report it as a gap; it does **not** count toward example
+  coverage or validation. Never assume the contents of an artifact you could not read.
+
 ## The loop
 
 Run this loop; after **every** pass, report readiness and the single most valuable next action

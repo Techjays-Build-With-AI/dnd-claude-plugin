@@ -37,7 +37,7 @@ This one Git repo is both the **marketplace** and the **plugin** it contains:
 | `skills/discovery-completeness/` | The core orchestrator skill — auto-triggers on D&D/discovery work and runs the loop. |
 | `commands/` | One slash command per stage: `init · intake · map · gap-scan · questions · validation-pack · readiness`. |
 | `agents/` | Seven subagents that do the heavy lifting per stage. |
-| `templates/` | Output shapes: knowledge model, health dashboard, client validation pack, workflow example validation. |
+| `templates/` | Output shapes: artifact index, knowledge model, health dashboard, client validation pack, workflow example validation. |
 
 The plugin is the tool; per-project knowledge bases are generated into **your** working directory
 under `projects/<client>/`. Source of truth for the mold is `reference/dnd-schema.yaml`.
@@ -143,6 +143,24 @@ Work from the directory where you want the project's knowledge base to live (the
 You can enter at any step depending on what you already have, and re-run `gap-scan` / `readiness` as
 new evidence arrives. The co-pilot will **refuse to call a workflow scope-ready** until it has a
 validated happy-path, exception, and edge example for it — that gate is the whole point.
+
+### Artifacts: local + Google Drive (the artifact index)
+
+`init` scaffolds `projects/<client>/inbox/index.md` — the authoritative register of every artifact.
+Add one row per file with its access type and (for examples) its workflow + scenario:
+
+| ID | Access | Location | Workflow | Scenario | Status |
+|----|--------|----------|----------|----------|--------|
+| A1 | local | inbox/kickoff.txt | — | — | ready |
+| A3 | gdrive | https://drive.google.com/file/d/abc123 | Invoice Validation | happy | needs-fetch |
+
+- **`local`** files are read directly.
+- **`gdrive`** files are fetched automatically: on `intake`, the orchestrator pulls each Drive item via
+  the **Google Drive connector** into `inbox/.cache/`, marks it `ready`, and keeps the Drive URL as
+  provenance. The first time, it will ask you to authorize the connector (a one-time OAuth link).
+- Anything it can't reach stays `needs-fetch` and is reported as a gap — it does **not** count toward
+  example coverage or readiness. So a workflow whose exception sample is still stuck in Drive shows as
+  *not* scope-ready, with "fetch A4 from Drive" as the next action.
 
 ### What you get out
 - `projects/<client>/knowledge-model.md` — the living source of truth.
