@@ -1,0 +1,283 @@
+# Machine-readable D&D "mold". Source of truth: "00 - D&D Document Guide.xlsx".
+# The agent treats every `field` below as a REQUIRED container to fill, score, and gap-check.
+# Do NOT invent sections that are not in the workbook. Update version when the workbook changes.
+#
+# Field semantics:
+#   required: true          -> must be present before the document can be signed off
+#   required: conditional   -> required only when the trigger applies (see `when`)
+#   owner                   -> role accountable for filling it (from the workbook)
+#   evidence_required: true -> must trace to a client artifact per the Evidence policy
+#   per_module: true        -> repeated once per module in the Scope Document
+schema_version: "1.0.0"
+source_workbook: "00 - D&D Document Guide.xlsx"
+
+framework:
+  name: "Techjays Design & Discovery (D&D)"
+  lifecycle: "Excellence Command Center — phases 2-4 (Scoping, Solutioning, Planning & Prepare)"
+  governance_gate: "PSRC (Project Solution Review Committee)"
+  principle: "Each document answers one question, has one owner, earns one sign-off."
+  central_question: "Can we safely estimate and commit to this scope?"
+
+# The PSRC review lenses — the readiness verdict reports against these.
+psrc_lenses:
+  - Solution Fit
+  - Scope Completeness
+  - Architecture Soundness
+  - Risk & Feasibility
+  - Effort & Timeline
+  - Value & ROI
+  - Client Impact
+
+documents:
+
+  - id: executive_summary
+    order: 1
+    name: "Executive Summary / Engagement Brief"
+    question_it_answers: "Why are we doing this, what outcome, what's recommended?"
+    owner: "Engagement lead"
+    approves: "Orientation & recommended approach"
+    note: "Often the only document a sponsor reads end-to-end. Keep it short and decision-oriented."
+    sections:
+      - field: engagement_context_business_driver
+        required: true
+        covers: "Why this engagement exists; the business problem/opportunity in the client's terms; the trigger for acting now."
+      - field: current_state_summary
+        required: true
+        covers: "One-paragraph synthesis of how things work today and the cost of the status quo (time, error, risk). Detail lives in the Scope Document."
+      - field: future_state_vision
+        required: true
+        covers: "The target AI-native outcome in plain language; what changes for the business and its users."
+      - field: recommended_approach
+        required: true
+        covers: "Techjays' proposed path, including the outcome-based / shared-risk model and the Learn-Proof-Ship-Evolve framing."
+      - field: scope_at_a_glance
+        required: true
+        covers: "The modules in play and any headline exclusions, summarised. Points to the Scope Document for detail."
+      - field: commercial_model_note
+        required: true
+        owner: "Engagement + Commercial"
+        covers: "How the engagement is priced at a high level (fixed-bid where ready, T&M where not). No numbers if the proposal is separate."
+      - field: key_risks_assumptions_headline
+        required: true
+        covers: "The 3-5 things that most affect feasibility, cost, or timeline. Full list lives in the RAID Register."
+      - field: decision_requested
+        required: true
+        covers: "Exactly what the client is being asked to approve at this milestone, and what unlocks next."
+
+  - id: scope_document
+    order: 2
+    name: "Scope Document (including Requirements)"
+    question_it_answers: "What are we building? What's in / out? What are the rules?"
+    owner: "BA / Engagement lead"
+    approves: "The scope-freeze baseline"
+    note: "The heart of the pack and the thing that gets frozen. Requirements here are at module/capability level — the detailed SRS comes later in build."
+    sections:
+      - field: scope_statement
+        required: true
+        covers: "A clear sentence defining the boundary of what is being delivered; sets the frame for everything below."
+      - field: module_breakdown
+        required: true
+        covers: "The business decomposed into modules (e.g. Intake, Processing, Validation, Approval, System Updates, Exception Handling, Reporting, Admin, Integrations). Each gets its own sign-off."
+      - field: ai_vs_deterministic_split
+        required: true
+        owner: "Architect / BA"
+        covers: "Explicit dividing line: what AI may decide (probabilistic), what stays deterministic (rule-based), where a human must confirm. Governs every module."
+      - field: user_roles_permissions
+        required: true
+        covers: "The user classes and what each can do."
+      - field: global_out_of_scope
+        required: true
+        covers: "Cross-cutting exclusions that apply beyond a single module."
+      - field: assumptions_reference
+        required: true
+        covers: "Pointer to the RAID Register; assumptions are owned there, not duplicated here."
+
+    # Repeated once per module identified in module_breakdown.
+    per_module_sections:
+      - field: current_state
+        required: true
+        per_module: true
+        owner: "BA"
+        evidence_required: true
+        covers: "How the process works today — actors, triggers, inputs/outputs, systems, manual steps, pain points, known exceptions."
+      - field: future_state
+        required: true
+        per_module: true
+        owner: "BA"
+        covers: "How the AI-enabled process will work — AI role, software automation role, human approval points, exception flow, system updates, audit trail."
+      - field: in_scope_out_of_scope
+        required: true
+        per_module: true
+        covers: "Functional capabilities, document/data types, workflows and integrations included; and explicitly what is excluded, deferred, or unconfirmed."
+      - field: functional_requirements
+        required: true
+        per_module: true
+        covers: "Capability-level requirements (what the module must do), each prioritised. Detailed testable specs are deferred to the SRS."
+      - field: business_rules
+        required: true
+        per_module: true
+        evidence_required: true
+        covers: "Approval rules, matching rules, validation rules, escalation rules."
+      - field: exceptions
+        required: true
+        per_module: true
+        evidence_required: true
+        covers: "Missing data, duplicates, API failures, low AI confidence, mismatches, delayed approvals — and how each is handled."
+      - field: data_fields
+        required: true
+        per_module: true
+        owner: "BA / Architect"
+        covers: "Key inputs/outputs and the fields the module reads or writes."
+      - field: integrations
+        required: true
+        per_module: true
+        covers: "Systems the module touches and the direction of data flow."
+      - field: acceptance_criteria
+        required: true
+        per_module: true
+        covers: "What must be true for the module to be considered complete and acceptable."
+
+  - id: technical_architecture
+    order: 3
+    name: "Technical Architecture & Solution Design"
+    question_it_answers: "How will it work technically? AI vs deterministic, data, integrations, NFRs?"
+    owner: "Architect / Tech lead"
+    approves: "Technical feasibility"
+    note: "Answers HOW the solution works. Confirms technical feasibility behind the scope."
+    sections:
+      - field: solution_overview_context_diagram
+        required: true
+        owner: "Architect"
+        covers: "High-level architecture and how the system sits among the client's existing systems; end-to-end flow across modules."
+      - field: component_architecture
+        required: true
+        owner: "Architect"
+        covers: "The major components/services and how they interact; sequence of a representative end-to-end transaction."
+      - field: ai_ml_approach
+        required: true
+        owner: "Architect / ML lead"
+        covers: "Capability types (extraction, classification, summarisation, generation, retrieval), model/service choices, hosting, and the data-flow boundary."
+      - field: deterministic_logic_boundary
+        required: true
+        covers: "What is implemented as deterministic, testable software vs handed to AI; confidence thresholds and human-in-the-loop points."
+      - field: data_architecture_dictionary
+        required: true
+        owner: "Architect / Data"
+        covers: "Core entities, data stores, the master field list/schema, and how data moves through the system."
+      - field: integration_specifications
+        required: true
+        covers: "Each external system: direction (read/write), protocol/API, authentication, rate limits and known constraints. (Break into its own doc only if integration is the dominant risk.)"
+      - field: non_functional_requirements
+        required: true
+        covers: "Measurable targets for performance, scalability, availability, reliability, usability/accessibility — not adjectives."
+      - field: security_compliance
+        required: true
+        owner: "Architect / Security"
+        covers: "AuthN/AuthZ, encryption in transit/at rest, SSO, PII handling, data residency, retention, audit trail, regulatory obligations."
+      - field: environments_deployment
+        required: true
+        owner: "Architect / DevOps"
+        covers: "Deployment model (cloud/region/on-prem/hybrid), environments, and release approach."
+      - field: technical_constraints
+        required: true
+        covers: "Mandated technologies, platform limits, volume ceilings, or client-imposed constraints that shape the design."
+      - field: responsible_ai_guardrails
+        required: true
+        covers: "Restricted actions, redaction, content-safety / prompt-injection controls, and the rule that AI never finalises irreversible actions without the defined human step."
+      - field: monitoring_drift_evolve
+        required: true
+        covers: "Production accuracy monitoring, alerting on degradation, retraining triggers."
+
+  - id: raid_register
+    order: 4
+    name: "RAID Register (Risks, Assumptions, Issues, Dependencies)"
+    question_it_answers: "Under what conditions does this estimate hold?"
+    owner: "Engagement lead"
+    approves: "The conditions attached to the price"
+    note: "The living document most teams skip and most regret. These are the conditions under which the fixed price is valid."
+    sections:
+      - field: assumptions
+        required: true
+        covers: "Each assumption the estimate relies on, with impact-if-wrong (accuracy expectations, sample-data availability, third-party limitations). Failing assumptions trigger change control."
+      - field: dependencies
+        required: true
+        covers: "What Techjays needs from the client/third parties and by when: system/credential access, API availability, sample data, stakeholder availability for clarifications and UAT."
+      - field: risks
+        required: true
+        covers: "Things that may go wrong, with likelihood, impact, mitigation, and owner. Includes technical, data, integration, and delivery risks."
+      - field: open_questions
+        required: true
+        covers: "Unresolved items, each classified using the D&D scheme. Drives whether a module can be estimated."
+      - field: open_question_classification
+        required: true
+        covers: "Apply one per question: Must close before estimate · Proceed with assumption · Minor implementation detail · Too uncertain (exclude / T&M) · Future phase."
+      - field: resolution_log_status
+        required: true
+        covers: "Tracks each item to closure: status, owner, date needed, date resolved. Keeps the register live rather than a one-time snapshot."
+
+  - id: implementation_plan
+    order: 5
+    name: "Implementation Plan & Phasing"
+    question_it_answers: "In what order and over what timeline (Learn / Proof / Ship / Evolve)?"
+    owner: "Delivery lead"
+    approves: "Sequencing & phasing"
+    note: "Sequences the approved scope across the Learn / Proof / Ship / Evolve model."
+    sections:
+      - field: phase_breakdown
+        required: true
+        covers: "The engagement structured as Learn -> Proof -> Ship -> Evolve, with the goal of each phase."
+      - field: module_to_phase_mapping
+        required: true
+        covers: "Which modules land in which phase, and why (value, risk, dependency order)."
+      - field: milestones_deliverables
+        required: true
+        covers: "Concrete deliverables and decision points per phase."
+      - field: sequencing_dependencies
+        required: true
+        owner: "Delivery lead / Architect"
+        covers: "Build order and inter-module/technical dependencies that constrain it."
+      - field: timeline_view
+        required: true
+        covers: "Indicative schedule across phases; durations and key dates (caveated by RAID assumptions)."
+      - field: resource_cost_plan
+        required: true
+        covers: "Team shape, roles, and effort per phase, with the cost basis. Feeds the PSRC 'Effort & Timeline' review lens."
+      - field: communication_plan
+        required: true
+        covers: "Cadence, channels, and stakeholders for status, escalation, and decisions across the engagement."
+      - field: quality_acceptance_plan
+        required: true
+        owner: "Delivery lead / QA"
+        covers: "How quality is assured and how acceptance is demonstrated per phase; ties to module acceptance criteria and UAT sign-off."
+      - field: entry_exit_criteria_per_phase
+        required: true
+        covers: "What must be true to start and to close each phase — ties phases to acceptance."
+
+  - id: approval_page
+    order: 6
+    name: "Approval / Sign-off Page"
+    question_it_answers: "Is this baseline agreed by the client?"
+    owner: "Client signatories + internal PSRC"
+    approves: "The scope freeze itself"
+    note: "Two gates: the PSRC (internal) approves the solution & scope to proceed, and the client signs off the scope freeze that authorises Techjays to prepare the fixed-bid proposal."
+    sections:
+      - field: scope_freeze_statement
+        required: true
+        covers: "States that the documented modules, workflows, assumptions, integrations, business rules, exceptions, exclusions, and acceptance criteria are approved as the baseline for a fixed-bid proposal."
+      - field: what_is_being_approved
+        required: true
+        covers: "Explicit list of what the signature covers (the contents of the pack as a baseline)."
+      - field: exclusions_acknowledgement
+        required: true
+        covers: "Client acknowledges what is out of scope, deferred, or T&M-recommended, so nothing is assumed included by silence."
+      - field: internal_psrc_review_approval
+        required: true
+        owner: "PSRC / Head of Command Center"
+        covers: "PSRC reviews scope & solution for the seven lenses. PSRC approval is the internal gate that authorises proceeding (Approve to Proceed -> Execution Starts)."
+      - field: change_control_note
+        required: true
+        verbatim: "Any new requirement, workflow, integration, report, rule, exception, data variation, third-party limitation, or changed assumption after approval may affect cost, timeline, and approach, and is handled via change control."
+      - field: signatory_table
+        required: true
+        owner: "Client + Techjays"
+        covers: "Names, roles, organisations, signatures, and dates for the client and Techjays approvers. Records both the internal PSRC approval and the client sign-off."

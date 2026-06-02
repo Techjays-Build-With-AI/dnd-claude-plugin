@@ -1,0 +1,18 @@
+{
+  "name": "dnd-copilot",
+  "version": "0.1.0",
+  "description": "Design & Discovery co-pilot. Uses the Techjays D&D mold as a structured schema, ingests interviews/documents/samples, maps them into the required discovery outputs, scores scope readiness, enforces example-based validation, generates stakeholder questions, and produces a validated scope baseline for fixed-bid proposals.",
+  "author": {
+    "name": "Techjays"
+  },
+  "homepage": "https://github.com/Techjays-Build-With-AI/dnd-claude-plugin",
+  "repository": "https://github.com/Techjays-Build-With-AI/dnd-claude-plugin",
+  "license": "UNLICENSED",
+  "keywords": [
+    "design-and-discovery",
+    "scope-governance",
+    "business-analysis",
+    "requirements",
+    "fixed-bid"
+  ]
+}

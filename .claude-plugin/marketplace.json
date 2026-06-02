@@ -1,0 +1,19 @@
+{
+  "name": "techjays-mp",
+  "description": "Techjays internal marketplace — Design & Discovery tooling.",
+  "version": "0.1.0",
+  "owner": {
+    "name": "Techjays"
+  },
+  "plugins": [
+    {
+      "name": "dnd-copilot",
+      "source": "./",
+      "description": "Design & Discovery co-pilot: scope-governance, completeness checking, and fixed-bid readiness.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Techjays"
+      }
+    }
+  ]
+}

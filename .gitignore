@@ -1,0 +1,14 @@
+# Per-client discovery knowledge bases — these are generated into the working dir, not part of the plugin
+projects/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# Temp Office lock files
+~$*.xlsx
+~$*.docx
