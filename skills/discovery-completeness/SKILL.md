@@ -66,27 +66,27 @@ Run this loop; after **every** pass, report readiness and the single most valuab
 (usually "get evidence X from stakeholder Y"). Each step has a matching slash command and subagent —
 delegate heavy work to the subagent to keep context clean.
 
-1. **Init** (`/dnd-copilot:init`) — create the project shell: name, business objective, stakeholders,
+1. **Init** (`/ba:init`) — create the project shell: name, business objective, stakeholders,
    modules, artifact list, discovery timeline. Instantiate `templates/project-knowledge-model.md`.
-2. **Intake** (`/dnd-copilot:intake`) — ingest transcripts, notes, documents, samples, screenshots →
+2. **Intake** (`/ba:intake`) — ingest transcripts, notes, documents, samples, screenshots →
    categorized discovery notes; extract entities, workflows, rules, risks, open questions. Classify
    every item (taxonomy) and record its source (evidence policy).
-3. **Map** (`/dnd-copilot:map`) — convert notes into current-state and future-state workflows
+3. **Map** (`/ba:map`) — convert notes into current-state and future-state workflows
    (actors, systems, inputs/outputs, decision points, exceptions, pain points, AI opportunities).
-4. **Fill & gap-scan** (`/dnd-copilot:gap-scan`) — map everything into the mold; compute per-module
+4. **Fill & gap-scan** (`/ba:gap-scan`) — map everything into the mold; compute per-module
    Scope Readiness + example-coverage scores; list missing sections, weak/unconfirmed items, unmapped
    exceptions, missing stakeholders/samples/integration details.
-5. **Questions** (`/dnd-copilot:questions`) — generate stakeholder-specific clarification questions
+5. **Questions** (`/ba:questions`) — generate stakeholder-specific clarification questions
    for every gap, and **example requests** for every workflow short of 100% coverage.
-6. **Validation pack** (`/dnd-copilot:validation-pack`) — produce the client-facing pack to confirm
+6. **Validation pack** (`/ba:validation-pack`) — produce the client-facing pack to confirm
    or correct understanding; track decisions and confirmations. Render it for the client with
-   `/dnd-copilot:report validation` (self-contained, read-only HTML).
-7. **Readiness** (`/dnd-copilot:readiness`) — Ready / Not Ready / Ready-with-Assumptions, reported
+   `/ba:report validation` (self-contained, read-only HTML).
+7. **Readiness** (`/ba:readiness`) — Ready / Not Ready / Ready-with-Assumptions, reported
    against the seven PSRC lenses, naming ready vs deferred vs excluded modules and required SOW
    assumptions.
 8. **Freeze** — only once validation is sufficiently complete: produce the Final D&D Pack and the
    Approval Page (scope-freeze + exclusions + change-control note verbatim). Render it with
-   `/dnd-copilot:report final`; the client signs a dated print-to-PDF of that exact version.
+   `/ba:report final`; the client signs a dated print-to-PDF of that exact version.
 
 You may enter the loop at any step depending on what the user already has. Do not skip the
 example-coverage gate when deciding readiness.

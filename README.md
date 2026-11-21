@@ -1,7 +1,8 @@
-# Techjays D&D Co-Pilot (`dnd-copilot`)
+# Techjays BA Agent (`ba`)
 
-A Claude Code **plugin** that turns Techjays' Design & Discovery (D&D) document guide into an active
-**scope-governance assistant**. It treats the D&D mold as a schema, ingests interviews/documents/
+A Claude Code **plugin** that acts as a **Business Analyst** for the team — invoke it as `/ba:*`. It
+turns Techjays' Design & Discovery (D&D) document guide into an active **scope-governance assistant**:
+it treats the D&D mold as a schema, ingests interviews/documents/
 samples, maps them into the required discovery outputs, scores scope readiness, enforces
 example-based validation, generates stakeholder questions, and produces a validated scope baseline for
 fixed-bid proposals.
@@ -24,9 +25,9 @@ This one Git repo is both the **marketplace** and the **plugin** it contains:
 | Thing | Value | Where it comes from |
 |-------|-------|---------------------|
 | Marketplace name | `techjays-mp` | `.claude-plugin/marketplace.json` → `name` |
-| Plugin name | `dnd-copilot` | `.claude-plugin/plugin.json` → `name` |
-| Install identifier | `dnd-copilot@techjays-mp` | `<plugin>@<marketplace>` |
-| Command namespace | `/dnd-copilot:<command>` | the plugin name |
+| Plugin name | `ba` | `.claude-plugin/plugin.json` → `name` |
+| Install identifier | `ba@techjays-mp` | `<plugin>@<marketplace>` |
+| Command namespace | `/ba:<command>` | the plugin name |
 
 ## What's inside
 
@@ -72,17 +73,17 @@ In Claude Code:
 
 ```text
 /plugin marketplace add Techjays-Build-With-AI/dnd-claude-plugin
-/plugin install dnd-copilot@techjays-mp
+/plugin install ba@techjays-mp
 ```
 
 `/plugin marketplace add` accepts the GitHub `owner/repo` shorthand, a full `https://…git` URL, or a
 local path. Note the two names differ on purpose: you **add the marketplace by repo**
 (`Techjays-Build-With-AI/dnd-claude-plugin`) but **install the plugin by its marketplace identity**
-(`dnd-copilot@techjays-mp`). After installing, restart Claude Code (or run `/reload-plugins`) if the
+(`ba@techjays-mp`). After installing, restart Claude Code (or run `/reload-plugins`) if the
 commands don't appear immediately.
 
 **Verify it loaded:**
-- `/help` lists the `/dnd-copilot:*` commands and the `discovery-completeness` skill.
+- `/help` lists the `/ba:*` commands and the `discovery-completeness` skill.
 - `/agents` lists the seven subagents (`intake-agent`, `workflow-mapper`, `scope-structurer`,
   `gap-detector`, `question-generator`, `validation-agent`, `readiness-agent`).
 
@@ -99,7 +100,7 @@ this plugin repo) so teammates are prompted to install automatically when they t
     }
   },
   "enabledPlugins": {
-    "dnd-copilot@techjays-mp": true
+    "ba@techjays-mp": true
   }
 }
 ```
@@ -113,7 +114,7 @@ When the maintainer pushes changes (e.g. a new schema version), teammates run:
 
 ```text
 /plugin marketplace update techjays-mp
-/plugin install dnd-copilot@techjays-mp
+/plugin install ba@techjays-mp
 ```
 
 ---
@@ -132,14 +133,14 @@ Work from the directory where you want the project's knowledge base to live (the
 
 | Step | Command | What it does |
 |------|---------|--------------|
-| 1 | `/dnd-copilot:init Acme AP Automation` | Create the project shell (objective, stakeholders, modules, artifacts, timeline). |
-| 2 | `/dnd-copilot:intake ./notes ./samples` | Ingest transcripts/notes/documents/samples; classify and source every item. |
-| 3 | `/dnd-copilot:map` | Build current-state and future-state workflows per module. |
-| 4 | `/dnd-copilot:gap-scan` | Fill the mold, score readiness + example coverage, list every gap. |
-| 5 | `/dnd-copilot:questions` | Generate stakeholder questions and example requests for the gaps. |
-| 6 | `/dnd-copilot:validation-pack` | Produce the client-facing confirmation pack. |
-| 7 | `/dnd-copilot:readiness` | Verdict — Ready / Not Ready / Ready-with-Assumptions vs the 7 PSRC lenses. |
-| 8 | `/dnd-copilot:report [validation\|final]` | Render the knowledge model into a self-contained, read-only HTML report for client review + print-to-PDF sign-off. |
+| 1 | `/ba:init Acme AP Automation` | Create the project shell (objective, stakeholders, modules, artifacts, timeline). |
+| 2 | `/ba:intake ./notes ./samples` | Ingest transcripts/notes/documents/samples; classify and source every item. |
+| 3 | `/ba:map` | Build current-state and future-state workflows per module. |
+| 4 | `/ba:gap-scan` | Fill the mold, score readiness + example coverage, list every gap. |
+| 5 | `/ba:questions` | Generate stakeholder questions and example requests for the gaps. |
+| 6 | `/ba:validation-pack` | Produce the client-facing confirmation pack. |
+| 7 | `/ba:readiness` | Verdict — Ready / Not Ready / Ready-with-Assumptions vs the 7 PSRC lenses. |
+| 8 | `/ba:report [validation\|final]` | Render the knowledge model into a self-contained, read-only HTML report for client review + print-to-PDF sign-off. |
 
 You can enter at any step depending on what you already have, and re-run `gap-scan` / `readiness` as
 new evidence arrives. The co-pilot will **refuse to call a workflow scope-ready** until it has a
@@ -168,7 +169,7 @@ Add one row per file with its access type and (for examples) its workflow + scen
 - A continuously updated **Discovery Health Dashboard** (internal).
 - A **Client Validation Pack** when sections mature.
 - A **readiness verdict** mapped to the PSRC review lenses, and eventually the **Final D&D Pack**.
-- A self-contained **HTML report** (`/dnd-copilot:report`) for client review — collapsible modules,
+- A self-contained **HTML report** (`/ba:report`) for client review — collapsible modules,
   clickable evidence/example traceability, the readiness + coverage gates visualized. It is
   **read-only**: sign-off is by a dated **print-to-PDF** export of that exact version, cited on the
   Approval Page (no fake in-page "Approve" button — the plugin has no backend to capture one). The
